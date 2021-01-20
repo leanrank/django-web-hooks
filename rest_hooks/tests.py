@@ -15,14 +15,9 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.test import TestCase
 from django.test.utils import override_settings
-try:
-    from django.contrib.comments.models import Comment
-    comments_app_label = 'comments'
-except ImportError:
-    from django_comments.models import Comment
-    comments_app_label = 'django_comments'
+from django_comments.models import Comment
 
-from rest_hooks import models
+from rest_hooks import models, config, utils
 from rest_hooks import signals
 from rest_hooks.admin import HookForm
 
@@ -31,10 +26,10 @@ Hook = models.Hook
 
 urlpatterns = []
 HOOK_EVENTS_OVERRIDE = {
-    'comment.added':        comments_app_label + '.Comment.created',
-    'comment.changed':      comments_app_label + '.Comment.updated',
-    'comment.removed':      comments_app_label + '.Comment.deleted',
-    'comment.moderated':    comments_app_label + '.Comment.moderated',
+    'comment.added':        'django_comments.Comment.created',
+    'comment.changed':      'django_comments.Comment.updated',
+    'comment.removed':      'django_comments.Comment.deleted',
+    'comment.moderated':    'django_comments.Comment.moderated',
     'special.thing':        None,
 }
 
@@ -73,9 +68,9 @@ class RESTHooksTest(TestCase):
     @override_settings(HOOK_EVENTS=ALT_HOOK_EVENTS)
     def test_get_event_actions_config(self):
         self.assertEquals(
-            models.get_event_actions_config(),
+            config.get_event_actions_config(),
             {
-                comments_app_label + '.Comment': {
+                'django_comments.Comment': {
                     'created': ('comment.added', False),
                     'updated': ('comment.changed', False),
                     'deleted': ('comment.removed', False),
@@ -86,9 +81,9 @@ class RESTHooksTest(TestCase):
 
     def test_no_user_property_fail(self):
         with self.assertRaises(Exception):
-            models.find_and_fire_hook('some.fake.event', self.user)
+            utils.find_and_fire_hook('some.fake.event', self.user)
 
-        models.find_and_fire_hook('special.thing', self.user)
+        utils.find_and_fire_hook('special.thing', self.user)
 
     def test_no_hook(self):
         comment = Comment.objects.create(
@@ -295,6 +290,7 @@ class RESTHooksTest(TestCase):
         form = HookForm(data=form_data)
         self.assertTrue(form.is_valid())
 
+    @override_settings(HOOK_EVENTS=ALT_HOOK_EVENTS)
     def test_form_save(self):
         form_data = {
             'user': self.user.id,
@@ -302,7 +298,7 @@ class RESTHooksTest(TestCase):
             'event': HookForm.get_admin_events()[0][0]
         }
         form = HookForm(data=form_data)
-
+        form.is_valid()
         self.assertTrue(form.is_valid())
         instance = form.save()
         self.assertIsInstance(instance, Hook)

@@ -1,0 +1,3 @@
+-r devrequirements.txt
+django-contrib-comments>=2.0.0
+Django>=2.2,<3.0

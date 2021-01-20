@@ -6,10 +6,7 @@ from django.conf import settings
 
 
 APP_NAME = 'rest_hooks'
-if django.VERSION < (1, 8):
-    comments = 'django.contrib.comments'
-else:
-    comments = 'django_comments'
+comments = 'django_comments'
 
 settings.configure(
     DEBUG=True,
@@ -20,9 +17,10 @@ settings.configure(
     },
     USE_TZ=True,
     ROOT_URLCONF='{0}.tests'.format(APP_NAME),
-    MIDDLEWARE_CLASSES=(
+    MIDDLEWARE=(
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware'
     ),
     SITE_ID=1,
     HOOK_EVENTS={},
@@ -33,9 +31,22 @@ settings.configure(
         'django.contrib.sessions',
         'django.contrib.admin',
         'django.contrib.sites',
+        'django.contrib.messages',
         comments,
         APP_NAME,
     ),
+    TEMPLATES=[
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            }
+        },
+    ]
 )
 
 from django.test.utils import get_runner

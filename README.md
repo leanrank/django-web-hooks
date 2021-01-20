@@ -120,7 +120,7 @@ Next, you'll need to add `rest_hooks` to `INSTALLED_APPS` and configure
 your `HOOK_EVENTS` setting:
 
 ```python
-### settings.py ###
+### config.py ###
 
 INSTALLED_APPS = (
     # other apps here...
@@ -408,7 +408,7 @@ However, if you use Celery, we'd *really* recommend using a simple task
 to handle this instead of threads. A quick example:
 
 ```python
-### settings.py ###
+### config.py ###
 
 HOOK_DELIVERER = 'path.to.tasks.deliver_hook_wrapper'
 
@@ -466,7 +466,7 @@ The default `Hook` model fields can be extended using the `AbstractHook` model.
 For example, to add a `is_active` field on your hooks:
 
 ```python
-### settings.py ###
+### config.py ###
 
 HOOK_CUSTOM_MODEL = 'path.to.models.CustomHook'
 
@@ -483,7 +483,7 @@ The extended `CustomHook` model can be combined with a the `HOOK_FINDER` setting
 for advanced QuerySet filtering. 
 
 ```python
-### settings.py ###
+### config.py ###
 
 HOOK_FINDER = 'path.to.find_and_fire_hook'
 

@@ -72,7 +72,6 @@ def get_hook_model():
         return HookModel
 
 
-
 def find_and_fire_hook(event_name, instance, user_override=None, payload_override=None):
     """
     Look up Hooks that apply
@@ -82,7 +81,7 @@ def find_and_fire_hook(event_name, instance, user_override=None, payload_overrid
         User = get_user_model()
     except ImportError:
         from django.contrib.auth.models import User
-    from rest_hooks.models import HOOK_EVENTS
+    from rest_hooks.config import HOOK_EVENTS
 
     if event_name not in HOOK_EVENTS.keys():
         raise Exception(
@@ -138,7 +137,7 @@ def distill_model_event(
     If payload_override is passed, then it will be passed into HookModel.deliver_hook
 
     """
-    from rest_hooks.models import get_event_actions_config, HOOK_EVENTS
+    from rest_hooks.config import get_event_actions_config, HOOK_EVENTS
 
     if event_name is False and (model is False or action is False):
         raise TypeError(

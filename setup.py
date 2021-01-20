@@ -14,7 +14,7 @@ setup(
     author = 'Federico Torresan',
     author_email = 'federico.torresan@quentral.com',
     url = 'http://github.com/selfcommunity/django-rest-hooks',
-    install_requires=['Django>=2.2', 'requests'],
+    install_requires=['Django>=1.8', 'requests>=2.25.1'],
     packages=['rest_hooks'],
     package_data={
         'rest_hooks': [
