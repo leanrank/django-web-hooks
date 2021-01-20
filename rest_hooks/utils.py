@@ -20,10 +20,7 @@ def get_module(path):
 
         slugify = get_module('django.template.defaultfilters.slugify')
     """
-    try:
-        from importlib import import_module
-    except ImportError as e:
-        from django.utils.importlib import import_module
+    from importlib import import_module
 
     try:
         mod_name, func_name = path.rsplit('.', 1)

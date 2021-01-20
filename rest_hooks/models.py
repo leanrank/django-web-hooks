@@ -1,13 +1,13 @@
+import json
 from collections import OrderedDict
 
 import django
 import requests
 from django.conf import settings
 from django.core import serializers
-from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-import json
 
 from rest_hooks.signals import hook_sent_event
 from rest_hooks.utils import get_module
