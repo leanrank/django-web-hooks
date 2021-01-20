@@ -11,6 +11,7 @@ def get_version():
             if line.startswith("__version__"):
                 return eval(line.split("=")[-1])
 
+print(get_version())
 
 setup(
     name='rest-hooks',
