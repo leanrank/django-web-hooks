@@ -8,18 +8,17 @@ version_tuple = __import__('rest_hooks').VERSION
 version = '.'.join([str(v) for v in version_tuple])
 
 setup(
-    name = 'django-rest-hooks',
+    name = 'rest-hooks',
     description = 'A powerful mechanism for sending real time API notifications via a new subscription model.',
     version = version,
-    author = 'Bryan Helmig',
-    author_email = 'bryan@zapier.com',
-    url = 'http://github.com/zapier/django-rest-hooks',
-    install_requires=['Django>=1.5', 'requests'],
+    author = 'Federico Torresan',
+    author_email = 'federico.torresan@quentral.com',
+    url = 'http://github.com/selfcommunity/django-rest-hooks',
+    install_requires=['Django>=2.2', 'requests'],
     packages=['rest_hooks'],
     package_data={
         'rest_hooks': [
-            'migrations/*.py',
-            'south_migrations/*.py'
+            'migrations/*.py'
         ]
     },
     classifiers = [
