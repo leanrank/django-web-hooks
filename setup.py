@@ -3,17 +3,22 @@ try:
 except ImportError:
     from distutils.core import setup  # if setuptools breaks
 
+
 # Dynamically calculate the version
-version_tuple = __import__('rest_hooks').VERSION
-version = '.'.join([str(v) for v in version_tuple])
+def get_version():
+    with open("rest_hooks/__init__.py") as f:
+        for line in f:
+            if line.startswith("__version__"):
+                return eval(line.split("=")[-1])
+
 
 setup(
-    name = 'rest-hooks',
-    description = 'A powerful mechanism for sending real time API notifications via a new subscription model.',
-    version = version,
-    author = 'Federico Torresan',
-    author_email = 'federico.torresan@quentral.com',
-    url = 'http://github.com/selfcommunity/django-rest-hooks',
+    name='rest-hooks',
+    description='A powerful mechanism for sending real time API notifications via a new subscription model.',
+    version=get_version(),
+    author='Federico Torresan',
+    author_email='federico.torresan@quentral.com',
+    url='http://github.com/selfcommunity/django-rest-hooks',
     install_requires=['Django>=1.8', 'requests>=2.25.1'],
     packages=['rest_hooks'],
     package_data={
@@ -21,7 +26,7 @@ setup(
             'migrations/*.py'
         ]
     },
-    classifiers = [
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
