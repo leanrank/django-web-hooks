@@ -1,5 +1,5 @@
-[![PyPI Download](https://img.shields.io/pypi/v/rest-hooks.svg)](https://pypi.python.org/pypi/rest-hooks)
-[![PyPI Status](https://img.shields.io/pypi/status/rest-hooks.svg)](https://pypi.python.org/pypi/rest-hooks)
+[![PyPI Download](https://img.shields.io/pypi/v/django-web-hooks.svg)](https://pypi.python.org/pypi/django-web-hooks)
+[![PyPI Status](https://img.shields.io/pypi/status/django-web-hooks.svg)](https://pypi.python.org/pypi/django-web-hooks)
 
 This is a fork of https://github.com/selfcommunity/rest-hooks that is
 a fork of https://github.com/zapier/django-rest-hooks that is not supported anymore.
