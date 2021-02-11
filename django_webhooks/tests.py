@@ -17,9 +17,9 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django_comments.models import Comment
 
-from django_web_hooks import models, config, utils
-from django_web_hooks import signals
-from django_web_hooks.admin import HookForm
+from django_webhooks import models, config, utils
+from django_webhooks import signals
+from django_webhooks.admin import HookForm
 
 Hook = models.Hook
 
@@ -93,7 +93,7 @@ class RESTHooksTest(TestCase):
             comment='Hello world!'
         )
 
-    @patch('django_web_hooks.models.client.post', autospec=True)
+    @patch('django_webhooks.models.client.post', autospec=True)
     def perform_create_request_cycle(self, method_mock):
         method_mock.return_value = None
 
@@ -147,7 +147,7 @@ class RESTHooksTest(TestCase):
 
         del Comment.serialize_hook
 
-    @patch('django_web_hooks.models.client.post')
+    @patch('django_webhooks.models.client.post')
     def test_full_cycle_comment_hook(self, method_mock):
         method_mock.return_value = None
         target = 'http://example.com/test_full_cycle_comment_hook'
@@ -182,9 +182,9 @@ class RESTHooksTest(TestCase):
         self.assertEquals('Goodbye world...', payloads[1]['data']['fields']['comment'])
         self.assertEquals('Goodbye world...', payloads[2]['data']['fields']['comment'])
 
-    @patch('django_web_hooks.models.client.post')
+    @patch('django_webhooks.models.client.post')
     def test_custom_instance_hook(self, method_mock):
-        from django_web_hooks.signals import hook_event
+        from django_webhooks.signals import hook_event
 
         method_mock.return_value = None
         target = 'http://example.com/test_custom_instance_hook'
@@ -210,9 +210,9 @@ class RESTHooksTest(TestCase):
         self.assertEquals('comment.moderated', payloads[0]['hook']['event'])
         self.assertEquals('Hello world!', payloads[0]['data']['fields']['comment'])
 
-    @patch('django_web_hooks.models.client.post')
+    @patch('django_webhooks.models.client.post')
     def test_raw_custom_event(self, method_mock):
-        from django_web_hooks.signals import raw_hook_event
+        from django_webhooks.signals import raw_hook_event
 
         method_mock.return_value = None
         target = 'http://example.com/test_raw_custom_event'
@@ -307,12 +307,12 @@ class RESTHooksTest(TestCase):
         form = HookForm(data={})
         self.assertFalse(form.is_valid())
 
-    @override_settings(HOOK_CUSTOM_MODEL='django_web_hooks.models.Hook')
+    @override_settings(HOOK_CUSTOM_MODEL='django_webhooks.models.Hook')
     def test_get_custom_hook_model(self):
         # Using the default Hook model just to exercise get_hook_model's
         # lookup machinery.
-        from django_web_hooks.utils import get_hook_model
-        from django_web_hooks.models import AbstractHook
+        from django_webhooks.utils import get_hook_model
+        from django_webhooks.models import AbstractHook
         HookModel = get_hook_model()
         self.assertIs(HookModel, Hook)
         self.assertTrue(issubclass(HookModel, AbstractHook))

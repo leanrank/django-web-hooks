@@ -5,7 +5,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('django_web_hooks', '0001_initial'),
+        ('django_webhooks', '0001_initial'),
     ]
 
     operations = [

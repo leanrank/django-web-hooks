@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class RestHooksConfig(AppConfig):
-    name = "django_web_hooks"
+    name = "django_webhooks"
 
     def ready(self):
-        import django_web_hooks.signals
+        import django_webhooks.signals

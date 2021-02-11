@@ -2,7 +2,7 @@ from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 
 if getattr(django_settings, "HOOK_CUSTOM_MODEL", None) is None:
-    django_settings.HOOK_CUSTOM_MODEL = "django_web_hooks.Hook"
+    django_settings.HOOK_CUSTOM_MODEL = "django_webhooks.Hook"
 
 HOOK_EVENTS = getattr(django_settings, "HOOK_EVENTS", None)
 if HOOK_EVENTS is None:

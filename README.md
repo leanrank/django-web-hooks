@@ -133,7 +133,7 @@ class Book(models.Model):
 
     def mark_as_read(self):
         # models can also have custom defined events
-        from django_web_hooks.signals import hook_event
+        from django_webhooks.signals import hook_event
         hook_event.send(
             sender=self.__class__,
             action="read",
@@ -146,7 +146,7 @@ handle the basic `created`, `updated` and `deleted` signals & events:
 
 ```python
 >>> from django.contrib.auth.models import User
->>> from django_web_hooks.models import Hook
+>>> from django_webhooks.models import Hook
 >>> jrrtolkien = User.objects.create(username="jrrtolkien")
 >>> hook = Hook(user=jrrtolkien,
                 event="book.added",
@@ -194,7 +194,7 @@ triggered anyways.
 You can also fire custom events with an arbitrary payload:
 
 ```python
-from django_web_hooks.signals import raw_hook_event
+from django_webhooks.signals import raw_hook_event
 
 user = User.objects.get(id=123)
 raw_hook_event.send(
@@ -275,7 +275,7 @@ Some reference [Tastypie](http://tastypieapi.org/) or [Django REST framework](ht
 from tastypie.resources import ModelResource
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
-from django_web_hooks.models import Hook
+from django_webhooks.models import Hook
 
 class HookResource(ModelResource):
     def obj_create(self, bundle, request=None, **kwargs):
@@ -313,7 +313,7 @@ urlpatterns = patterns("",
 from django.conf import settings
 from rest_framework import serializers, exceptions
 
-from django_web_hooks.models import Hook
+from django_webhooks.models import Hook
 
 
 class HookSerializer(serializers.ModelSerializer):
@@ -332,7 +332,7 @@ class HookSerializer(serializers.ModelSerializer):
 
 from rest_framework import viewsets
 
-from django_web_hooks.models import Hook
+from django_webhooks.models import Hook
 
 from .serializers import HookSerializer
 
@@ -434,7 +434,7 @@ HOOK_CUSTOM_MODEL = "path.to.models.CustomHook"
 ### models.py ###
 
 from django.db import models
-from django_web_hooks.models import AbstractHook
+from django_webhooks.models import AbstractHook
 
 class CustomHook(AbstractHook):
     is_active = models.BooleanField(default=True)
