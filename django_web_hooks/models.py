@@ -9,11 +9,11 @@ from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 
-from rest_hooks.signals import hook_sent_event
-from rest_hooks.utils import get_module
+from django_web_hooks.signals import hook_sent_event
+from django_web_hooks.utils import get_module
 
 if getattr(settings, 'HOOK_THREADING', True):
-    from rest_hooks.client import Client
+    from django_web_hooks.client import Client
     client = Client()
 else:
     client = requests.Session()
@@ -37,7 +37,7 @@ class AbstractHook(models.Model):
 
     def clean(self):
         """ Validation for events. """
-        from rest_hooks.config import HOOK_EVENTS
+        from django_web_hooks.config import HOOK_EVENTS
         if self.event not in HOOK_EVENTS.keys():
             raise ValidationError(
                 "Invalid hook event {evt}.".format(evt=self.event)

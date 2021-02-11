@@ -1,7 +1,8 @@
 [![PyPI Download](https://img.shields.io/pypi/v/rest-hooks.svg)](https://pypi.python.org/pypi/rest-hooks)
 [![PyPI Status](https://img.shields.io/pypi/status/rest-hooks.svg)](https://pypi.python.org/pypi/rest-hooks)
 
-This is a fork of https://github.com/zapier/django-rest-hooks that is not supported anymore.
+This is a fork of https://github.com/selfcommunity/rest-hooks that is
+a fork of https://github.com/zapier/django-rest-hooks that is not supported anymore.
 
 ## What are Django REST Hooks?
 
@@ -9,13 +10,13 @@ This is a fork of https://github.com/zapier/django-rest-hooks that is not suppor
 REST Hooks are fancier versions of webhooks. Traditional webhooks are usually
 managed manually by the user, but REST Hooks are not! They encourage RESTful
 access to the hooks (or subscriptions) themselves. Add one, two or 15 hooks for
-any combination of event and URLs, then get notificatied in real-time by our
+any combination of event and URLs, then get notification in real-time by our
 bundled threaded callback mechanism.
 
 The best part is: by reusing Django's great signals framework, this library is
 dead simple. Here's how to get started:
 
-1. Add `'rest_hooks'` to installed apps in settings.py.
+1. Add `'django_web_hooks'` to installed apps in settings.py.
 2. Define your `HOOK_EVENTS` in settings.py.
 3. Start sending hooks!
 
@@ -36,9 +37,9 @@ If you want to make a Django form or API resource, you'll need to do that yourse
 
 ### Changelog
 
-#### Version 1.0.1:
+#### Version 0.0.1:
 
-First release of the project after fork from `https://github.com/zapier/django-rest-hooks`
+First release of the project after fork from `https://github.com/selfcommunity/rest-hooks`
 
 
 ### Development
@@ -46,14 +47,14 @@ First release of the project after fork from `https://github.com/zapier/django-r
 Running the tests for Django REST Hooks is very easy, just:
 
 ```
-git clone https://github.com/selfmunity/rest-hooks && cd rest-hooks
+git clone https://github.com/leanrank/django-web-hooks && cd django-rest-hooks
 ```
 
 Next, you'll want to make a virtual environment (we recommend using virtualenvwrapper
 but you could skip this we suppose) and then install dependencies:
 
 ```
-mkvirtualenv rest-hooks
+mkvirtualenv django-web-hooks
 pip install -r devrequirements.txt
 ```
 
@@ -65,18 +66,18 @@ python runtests.py
 
 ### Requirements
 
-* Python 2 or 3 (tested on 2.7, 3.3, 3.4, 3.6)
-* Django 1.8+ (tested on 1.8, 1.9, 1.10, 1.11, 2.0, 2.2)
+* Python 2 or 3 (tested on 2.7, 3.3, 3.4, 3.6, 3.8)
+* Django 1.8+ (tested on 1.8, 1.9, 1.10, 1.11, 2.0, 2.2, 3.0)
 
 ### Installing & Configuring
 
 We recommend pip to install Django REST Hooks:
 
 ```
-pip install rest-hooks
+pip install django-web-hooks
 ```
 
-Next, you'll need to add `rest_hooks.apps.RestHooksConfig` to `INSTALLED_APPS` and configure
+Next, you'll need to add `django_web_hooks.apps.RestHooksConfig` to `INSTALLED_APPS` and configure
 your `HOOK_EVENTS` setting:
 
 ```python
@@ -84,17 +85,17 @@ your `HOOK_EVENTS` setting:
 
 INSTALLED_APPS = (
     # other apps here...
-    'rest_hooks',
+    "django_web_hooks",
 )
 
 HOOK_EVENTS = {
     # 'any.event.name': 'App.Model.Action' (created/updated/deleted)
-    'book.added':       'bookstore.Book.created',
-    'book.changed':     'bookstore.Book.updated+',
-    'book.removed':     'bookstore.Book.deleted',
+    "book.added":       "bookstore.Book.created",
+    "book.changed":     "bookstore.Book.updated+",
+    "book.removed":     "bookstore.Book.deleted",
     # and custom events, no extra meta data needed
-    'book.read':         'bookstore.Book.read',
-    'user.logged_in':    None
+    "book.read":         "bookstore.Book.read",
+    "user.logged_in":    None
 }
 
 ### bookstore/models.py ###
@@ -105,7 +106,7 @@ class Book(models.Model):
     # which is specific to users. If you want a Hook to
     # be triggered for all users, add '+' to built-in Hooks
     # or pass user_override=False for custom_hook events
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     # maybe user is off a related object, so try...
     # user = property(lambda self: self.intermediary.user)
 
@@ -120,22 +121,22 @@ class Book(models.Model):
         # we recommend always sending the Hook
         # metadata along for the ride as well
         return {
-            'hook': hook.dict(),
-            'data': {
-                'id': self.id,
-                'title': self.title,
-                'pages': self.pages,
-                'fiction': self.fiction,
+            "hook": hook.dict(),
+            "data": {
+                "id": self.id,
+                "title": self.title,
+                "pages": self.pages,
+                "fiction": self.fiction,
                 # ... other fields here ...
             }
         }
 
     def mark_as_read(self):
         # models can also have custom defined events
-        from rest_hooks.signals import hook_event
+        from django_web_hooks.signals import hook_event
         hook_event.send(
             sender=self.__class__,
-            action='read',
+            action="read",
             instance=self # the Book object
         )
 ```
@@ -145,15 +146,15 @@ handle the basic `created`, `updated` and `deleted` signals & events:
 
 ```python
 >>> from django.contrib.auth.models import User
->>> from rest_hooks.models import Hook
->>> jrrtolkien = User.objects.create(username='jrrtolkien')
+>>> from django_web_hooks.models import Hook
+>>> jrrtolkien = User.objects.create(username="jrrtolkien")
 >>> hook = Hook(user=jrrtolkien,
-                event='book.added',
-                target='http://example.com/target.php')
+                event="book.added",
+                target="http://example.com/target.php")
 >>> hook.save()     # creates the hook and stores it for later...
 >>> from bookstore.models import Book
 >>> book = Book(user=jrrtolkien,
-                title='The Two Towers',
+                title="The Two Towers",
                 pages=327,
                 fiction=True)
 >>> book.save()     # fires off 'bookstore.Book.created' hook automatically
@@ -184,7 +185,7 @@ triggered anyways.
 
 ```python
 ...
->>> book.title += ': Deluxe Edition'
+>>> book.title += ": Deluxe Edition"
 >>> book.pages = 352
 >>> book.save()     # would fire off 'bookstore.Book.updated' hook automatically
 >>> book.delete()   # would fire off 'bookstore.Book.deleted' hook automatically
@@ -193,16 +194,16 @@ triggered anyways.
 You can also fire custom events with an arbitrary payload:
 
 ```python
-from rest_hooks.signals import raw_hook_event
+from django_web_hooks.signals import raw_hook_event
 
 user = User.objects.get(id=123)
 raw_hook_event.send(
     sender=None,
-    event_name='user.logged_in',
+    event_name="user.logged_in",
     payload={
-        'username': user.username,
-        'email': user.email,
-        'when': datetime.datetime.now().isoformat()
+        "username": user.username,
+        "email": user.email,
+        "when": datetime.datetime.now().isoformat()
     },
     user=user # required: used to filter Hooks
 )
@@ -274,7 +275,7 @@ Some reference [Tastypie](http://tastypieapi.org/) or [Django REST framework](ht
 from tastypie.resources import ModelResource
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
-from rest_hooks.models import Hook
+from django_web_hooks.models import Hook
 
 class HookResource(ModelResource):
     def obj_create(self, bundle, request=None, **kwargs):
@@ -286,22 +287,22 @@ class HookResource(ModelResource):
         return object_list.filter(user=request.user)
 
     class Meta:
-        resource_name = 'hooks'
+        resource_name = "hooks"
         queryset = Hook.objects.all()
         authentication = ApiKeyAuthentication()
         authorization = Authorization()
-        allowed_methods = ['get', 'post', 'delete']
-        fields = ['event', 'target']
+        allowed_methods = ["get", "post", "delete"]
+        fields = ["event", "target"]
 
 ### urls.py ###
 
 from tastypie.api import Api
 
-v1_api = Api(api_name='v1')
+v1_api = Api(api_name="v1")
 v1_api.register(HookResource())
 
-urlpatterns = patterns('',
-    (r'^api/', include(v1_api.urls)),
+urlpatterns = patterns("",
+    (r"^api/", include(v1_api.urls)),
 )
 ```
 #### Django REST framework (3.+)
@@ -312,26 +313,26 @@ urlpatterns = patterns('',
 from django.conf import settings
 from rest_framework import serializers, exceptions
 
-from rest_hooks.models import Hook
+from django_web_hooks.models import Hook
 
 
 class HookSerializer(serializers.ModelSerializer):
     def validate_event(self, event):
         if event not in settings.HOOK_EVENTS:
-            err_msg = "Unexpected event {}".format(event)
+            err_msg = f"Unexpected event {event}"
             raise exceptions.ValidationError(detail=err_msg, code=400)
         return event    
     
     class Meta:
         model = Hook
-        fields = '__all__'
-        read_only_fields = ('user',)
+        fields = "__all__"
+        read_only_fields = ("user",)
 
 ### views.py ###
 
 from rest_framework import viewsets
 
-from rest_hooks.models import Hook
+from django_web_hooks.models import Hook
 
 from .serializers import HookSerializer
 
@@ -354,7 +355,7 @@ from rest_framework import routers
 from . import views
 
 router = routers.SimpleRouter(trailing_slash=False)
-router.register(r'webhooks', views.HookViewSet, 'webhook')
+router.register(r"webhooks", views.HookViewSet, "webhook")
 
 urlpatterns = router.urls
 ```
@@ -370,12 +371,12 @@ to handle this instead of threads. A quick example:
 ```python
 ### config.py ###
 
-HOOK_DELIVERER = 'path.to.tasks.deliver_hook_wrapper'
+HOOK_DELIVERER = "path.to.tasks.deliver_hook_wrapper"
 
 
 ### tasks.py ###
 
-from celery.task import Task
+from celery import Task
 
 import json
 import requests
@@ -395,7 +396,7 @@ class DeliverHook(Task):
             response = requests.post(
                 url=target,
                 data=json.dumps(payload),
-                headers={'Content-Type': 'application/json'}
+                headers={"Content-Type": "application/json"}
             )
             if response.status_code >= 500:
                 response.raise_for_status()
@@ -428,12 +429,12 @@ For example, to add a `is_active` field on your hooks:
 ```python
 ### config.py ###
 
-HOOK_CUSTOM_MODEL = 'path.to.models.CustomHook'
+HOOK_CUSTOM_MODEL = "path.to.models.CustomHook"
 
 ### models.py ###
 
 from django.db import models
-from rest_hooks.models import AbstractHook
+from django_web_hooks.models import AbstractHook
 
 class CustomHook(AbstractHook):
     is_active = models.BooleanField(default=True)
@@ -445,7 +446,7 @@ for advanced QuerySet filtering.
 ```python
 ### config.py ###
 
-HOOK_FINDER = 'path.to.find_and_fire_hook'
+HOOK_FINDER = "path.to.find_and_fire_hook"
 
 ### utils.py ###
 
@@ -453,8 +454,8 @@ from .models import CustomHook
 
 def find_and_fire_hook(event_name, instance, **kwargs):
     filters = {
-        'event': event_name,
-        'is_active': True,
+        "event": event_name,
+        "is_active": True,
     }
 
     hooks = CustomHook.objects.filter(**filters)

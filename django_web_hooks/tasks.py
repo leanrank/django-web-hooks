@@ -1,11 +1,16 @@
 import requests
 import json
 
-from celery.task import Task
+try:
+    # celery >= v.5.x.x
+    from celery import Task
+except ImportError:
+    # celery < v.5.x.x
+    from celery.task import Task
 
 from django.core.serializers.json import DjangoJSONEncoder
 
-from rest_hooks.utils import get_hook_model
+from django_web_hooks.utils import get_hook_model
 
 
 class DeliverHook(Task):
@@ -19,7 +24,7 @@ class DeliverHook(Task):
         response = requests.post(
             url=target,
             data=json.dumps(payload, cls=DjangoJSONEncoder),
-            headers={'Content-Type': 'application/json'}
+            headers={"Content-Type": "application/json"},
         )
 
         if response.status_code == 410 and hook_id:
@@ -32,5 +37,5 @@ class DeliverHook(Task):
 
 def deliver_hook_wrapper(target, payload, instance=None, hook=None, **kwargs):
     if hook:
-        kwargs['hook_id'] = hook.id
+        kwargs["hook_id"] = hook.id
     return DeliverHook.delay(target, payload, **kwargs)
