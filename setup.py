@@ -6,7 +6,7 @@ except ImportError:
 
 # Dynamically calculate the version
 def get_version():
-    with open("django_webhooks/__init__.py") as f:
+    with open("django_rest_webhooks/__init__.py") as f:
         for line in f:
             if line.startswith("__version__"):
                 return eval(line.split("=")[-1])
@@ -15,15 +15,15 @@ def get_version():
 print(get_version())
 
 setup(
-    name="django-webhooks",
+    name="django-rest-webhooks",
     description="A powerful mechanism for sending real time API notifications via a new subscription model.",
     version=get_version(),
     author="Bohdan Datsko",
     author_email="bohdan.datsko8888@gmail.com",
     url="https://github.com/leanrank/django-web-hooks",
     install_requires=["Django>=1.8", "requests>=2.25.1"],
-    packages=["django_webhooks"],
-    package_data={"django_webhooks": ["migrations/*.py"]},
+    packages=["django_rest_webhooks"],
+    package_data={"django_rest_webhooks": ["migrations/*.py"]},
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",

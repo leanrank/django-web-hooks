@@ -1,5 +1,5 @@
-[![PyPI Download](https://img.shields.io/pypi/v/django-web-hooks.svg)](https://pypi.python.org/pypi/django-web-hooks)
-[![PyPI Status](https://img.shields.io/pypi/status/django-web-hooks.svg)](https://pypi.python.org/pypi/django-web-hooks)
+[![PyPI Download](https://img.shields.io/pypi/v/django-rest-webhooks.svg)](https://pypi.python.org/pypi/django-rest-webhooks)
+[![PyPI Status](https://img.shields.io/pypi/status/django-rest-webhooks.svg)](https://pypi.python.org/pypi/django-rest-webhooks)
 
 This is a fork of https://github.com/selfcommunity/rest-hooks that is
 a fork of https://github.com/zapier/django-rest-hooks that is not supported anymore.
@@ -16,7 +16,7 @@ bundled threaded callback mechanism.
 The best part is: by reusing Django's great signals framework, this library is
 dead simple. Here's how to get started:
 
-1. Add `'django_web_hooks'` to installed apps in settings.py.
+1. Add `'django_rest_webhooks'` to installed apps in settings.py.
 2. Define your `HOOK_EVENTS` in settings.py.
 3. Start sending hooks!
 
@@ -47,14 +47,14 @@ First release of the project after fork from `https://github.com/selfcommunity/r
 Running the tests for Django REST Hooks is very easy, just:
 
 ```
-git clone https://github.com/leanrank/django-web-hooks && cd django-rest-hooks
+git clone https://github.com/leanrank/django-rest-webhooks && cd django-rest-hooks
 ```
 
 Next, you'll want to make a virtual environment (we recommend using virtualenvwrapper
 but you could skip this we suppose) and then install dependencies:
 
 ```
-mkvirtualenv django-web-hooks
+mkvirtualenv django-rest-webhooks
 pip install -r devrequirements.txt
 ```
 
@@ -74,10 +74,10 @@ python runtests.py
 We recommend pip to install Django REST Hooks:
 
 ```
-pip install django-web-hooks
+pip install django-rest-webhooks
 ```
 
-Next, you'll need to add `django_web_hooks.apps.RestHooksConfig` to `INSTALLED_APPS` and configure
+Next, you'll need to add `django_rest_webhooks.apps.RestHooksConfig` to `INSTALLED_APPS` and configure
 your `HOOK_EVENTS` setting:
 
 ```python
@@ -85,7 +85,7 @@ your `HOOK_EVENTS` setting:
 
 INSTALLED_APPS = (
     # other apps here...
-    "django_web_hooks",
+    "django_rest_webhooks",
 )
 
 HOOK_EVENTS = {
@@ -133,7 +133,7 @@ class Book(models.Model):
 
     def mark_as_read(self):
         # models can also have custom defined events
-        from django_webhooks.signals import hook_event
+        from django_rest_webhooks.signals import hook_event
         hook_event.send(
             sender=self.__class__,
             action="read",
@@ -146,7 +146,7 @@ handle the basic `created`, `updated` and `deleted` signals & events:
 
 ```python
 >>> from django.contrib.auth.models import User
->>> from django_webhooks.models import Hook
+>>> from django_rest_webhooks.models import Hook
 >>> jrrtolkien = User.objects.create(username="jrrtolkien")
 >>> hook = Hook(user=jrrtolkien,
                 event="book.added",
@@ -194,7 +194,7 @@ triggered anyways.
 You can also fire custom events with an arbitrary payload:
 
 ```python
-from django_webhooks.signals import raw_hook_event
+from django_rest_webhooks.signals import raw_hook_event
 
 user = User.objects.get(id=123)
 raw_hook_event.send(
@@ -275,7 +275,7 @@ Some reference [Tastypie](http://tastypieapi.org/) or [Django REST framework](ht
 from tastypie.resources import ModelResource
 from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import Authorization
-from django_webhooks.models import Hook
+from django_rest_webhooks.models import Hook
 
 class HookResource(ModelResource):
     def obj_create(self, bundle, request=None, **kwargs):
@@ -313,7 +313,7 @@ urlpatterns = patterns("",
 from django.conf import settings
 from rest_framework import serializers, exceptions
 
-from django_webhooks.models import Hook
+from django_rest_webhooks.models import Hook
 
 
 class HookSerializer(serializers.ModelSerializer):
@@ -332,7 +332,7 @@ class HookSerializer(serializers.ModelSerializer):
 
 from rest_framework import viewsets
 
-from django_webhooks.models import Hook
+from django_rest_webhooks.models import Hook
 
 from .serializers import HookSerializer
 
@@ -434,7 +434,7 @@ HOOK_CUSTOM_MODEL = "path.to.models.CustomHook"
 ### models.py ###
 
 from django.db import models
-from django_webhooks.models import AbstractHook
+from django_rest_webhooks.models import AbstractHook
 
 class CustomHook(AbstractHook):
     is_active = models.BooleanField(default=True)

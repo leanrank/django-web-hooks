@@ -46,7 +46,7 @@ def get_hook_model():
     """
     model_label = getattr(settings, 'HOOK_CUSTOM_MODEL', None)
     if django_apps:
-        model_label = (model_label or 'django_webhooks.Hook').replace('.models.', '.')
+        model_label = (model_label or 'django_rest_webhooks.Hook').replace('.models.', '.')
         try:
             return django_apps.get_model(model_label, **get_model_kwargs)
         except ValueError:
@@ -56,8 +56,8 @@ def get_hook_model():
                 "HOOK_CUSTOM_MODEL refers to model '%s' that has not been installed" % model_label
             )
     else:
-        if model_label in (None, 'django_webhooks.Hook'):
-            from django_webhooks.models import Hook
+        if model_label in (None, 'django_rest_webhooks.Hook'):
+            from django_rest_webhooks.models import Hook
             HookModel = Hook
         else:
             try:
@@ -78,7 +78,7 @@ def find_and_fire_hook(event_name, instance, user_override=None, payload_overrid
         User = get_user_model()
     except ImportError:
         from django.contrib.auth.models import User
-    from django_webhooks.config import HOOK_EVENTS
+    from django_rest_webhooks.config import HOOK_EVENTS
 
     if event_name not in HOOK_EVENTS.keys():
         raise Exception(
@@ -134,7 +134,7 @@ def distill_model_event(
     If payload_override is passed, then it will be passed into HookModel.deliver_hook
 
     """
-    from django_webhooks.config import get_event_actions_config, HOOK_EVENTS
+    from django_rest_webhooks.config import get_event_actions_config, HOOK_EVENTS
 
     if event_name is False and (model is False or action is False):
         raise TypeError(

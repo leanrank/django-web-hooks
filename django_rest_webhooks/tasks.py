@@ -10,7 +10,7 @@ except ImportError:
 
 from django.core.serializers.json import DjangoJSONEncoder
 
-from django_webhooks.utils import get_hook_model
+from django_rest_webhooks.utils import get_hook_model
 
 
 class DeliverHook(Task):

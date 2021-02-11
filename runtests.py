@@ -5,7 +5,7 @@ import django
 from django.conf import settings
 
 
-APP_NAME = "django_webhooks"
+APP_NAME = "django_rest_webhooks"
 comments = "django_comments"
 
 settings.configure(

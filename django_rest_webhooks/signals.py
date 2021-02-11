@@ -3,7 +3,7 @@ from django.dispatch import Signal
 from django.dispatch import receiver
 from django.test.signals import setting_changed
 
-from django_webhooks.utils import distill_model_event
+from django_rest_webhooks.utils import distill_model_event
 
 hook_event = Signal(providing_args=["action", "instance"])
 raw_hook_event = Signal(providing_args=["event_name", "payload", "user"])
@@ -82,7 +82,7 @@ def raw_custom_event(
 
 @receiver(setting_changed)
 def handle_hook_events_change(sender, setting, *args, **kwargs):
-    from django_webhooks.config import reset_event_actions_config
+    from django_rest_webhooks.config import reset_event_actions_config
 
     if setting == "HOOK_EVENTS":
         reset_event_actions_config()

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.conf import settings
 from django import forms
-from django_webhooks.utils import get_hook_model
+from django_rest_webhooks.utils import get_hook_model
 
 if getattr(settings, 'HOOK_EVENTS', None) is None:
     raise Exception("You need to define settings.HOOK_EVENTS!")
