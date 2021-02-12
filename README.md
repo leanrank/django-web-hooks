@@ -41,6 +41,10 @@ If you want to make a Django form or API resource, you'll need to do that yourse
 
 First release of the project after fork from `https://github.com/selfcommunity/rest-hooks`
 
+#### Version 0.0.2:
+
+Remove some Python 2.7 support
+
 
 ### Development
 
