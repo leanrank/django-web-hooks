@@ -12,7 +12,7 @@ settings.configure(
     DEBUG=True,
     DATABASES={"default": {"ENGINE": "django.db.backends.sqlite3"}},
     USE_TZ=True,
-    ROOT_URLCONF="{0}.tests".format(APP_NAME),
+    ROOT_URLCONF=f"{APP_NAME}.tests",
     MIDDLEWARE=(
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.contrib.auth.middleware.AuthenticationMiddleware",

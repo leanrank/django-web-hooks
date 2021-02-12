@@ -8,7 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
 if django.VERSION >= (2, 0,):
-    get_model_kwargs = {'require_ready': False}
+    get_model_kwargs = {"require_ready": False}
 else:
     get_model_kwargs = {}
 
@@ -23,18 +23,17 @@ def get_module(path):
     from importlib import import_module
 
     try:
-        mod_name, func_name = path.rsplit('.', 1)
+        mod_name, func_name = path.rsplit(".", 1)
         mod = import_module(mod_name)
     except ImportError as e:
-        raise ImportError(
-            'Error importing alert function {0}: "{1}"'.format(mod_name, e))
+        raise ImportError(f'Error importing alert function {mod_name}: "{e}"')
 
     try:
         func = getattr(mod, func_name)
     except AttributeError:
         raise ImportError(
-            ('Module "{0}" does not define a "{1}" function'
-                            ).format(mod_name, func_name))
+            f'Module "{mod_name}" does not define a "{func_name}" function'
+        )
 
     return func
 
@@ -44,27 +43,32 @@ def get_hook_model():
     Returns the Custom Hook model if defined in settings,
     otherwise the default Hook model.
     """
-    model_label = getattr(settings, 'HOOK_CUSTOM_MODEL', None)
+    model_label = getattr(settings, "HOOK_CUSTOM_MODEL", None)
     if django_apps:
-        model_label = (model_label or 'django_rest_webhooks.Hook').replace('.models.', '.')
+        model_label = (model_label or "django_rest_webhooks.Hook").replace(
+            ".models.", "."
+        )
         try:
             return django_apps.get_model(model_label, **get_model_kwargs)
         except ValueError:
-            raise ImproperlyConfigured("HOOK_CUSTOM_MODEL must be of the form 'app_label.model_name'")
+            raise ImproperlyConfigured(
+                "HOOK_CUSTOM_MODEL must be of the form 'app_label.model_name'"
+            )
         except LookupError:
             raise ImproperlyConfigured(
-                "HOOK_CUSTOM_MODEL refers to model '%s' that has not been installed" % model_label
+                f'HOOK_CUSTOM_MODEL refers to model "{model_label}" that has not been installed'
             )
     else:
-        if model_label in (None, 'django_rest_webhooks.Hook'):
+        if model_label in (None, "django_rest_webhooks.Hook"):
             from django_rest_webhooks.models import Hook
+
             HookModel = Hook
         else:
             try:
                 HookModel = get_module(settings.HOOK_CUSTOM_MODEL)
             except ImportError:
                 raise ImproperlyConfigured(
-                    "HOOK_CUSTOM_MODEL refers to model '%s' that cannot be imported" % model_label
+                    f"HOOK_CUSTOM_MODEL refers to model '{model_label}' that cannot be imported"
                 )
         return HookModel
 
@@ -75,29 +79,28 @@ def find_and_fire_hook(event_name, instance, user_override=None, payload_overrid
     """
     try:
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
     except ImportError:
         from django.contrib.auth.models import User
     from django_rest_webhooks.config import HOOK_EVENTS
 
     if event_name not in HOOK_EVENTS.keys():
-        raise Exception(
-            '"{}" does not exist in `settings.HOOK_EVENTS`.'.format(event_name)
-        )
+        raise Exception(f'"{event_name}" does not exist in `settings.HOOK_EVENTS`.')
 
-    filters = {'event': event_name}
+    filters = {"event": event_name}
 
     # Ignore the user if the user_override is False
     if user_override is not False:
         if user_override:
-            filters['user'] = user_override
-        elif hasattr(instance, 'user'):
-            filters['user'] = instance.user
+            filters["user"] = user_override
+        elif hasattr(instance, "user"):
+            filters["user"] = instance.user
         elif isinstance(instance, User):
-            filters['user'] = instance
+            filters["user"] = instance
         else:
             raise Exception(
-                '{} has no `user` property. REST Hooks needs this.'.format(repr(instance))
+                f"{repr(instance)} has no `user` property. REST Hooks needs this."
             )
     # NOTE: This is probably up for discussion, but I think, in this
     # case, instead of raising an error, we should fire the hook for
@@ -113,14 +116,14 @@ def find_and_fire_hook(event_name, instance, user_override=None, payload_overrid
 
 
 def distill_model_event(
-        instance,
-        model=False,
-        action=False,
-        user_override=None,
-        event_name=False,
-        trust_event_name=False,
-        payload_override=None,
-        ):
+    instance,
+    model=False,
+    action=False,
+    user_override=None,
+    event_name=False,
+    trust_event_name=False,
+    payload_override=None,
+):
     """
     Take `event_name` or determine it using action and model
     from settings.HOOK_EVENTS, and let hooks fly.
@@ -138,8 +141,8 @@ def distill_model_event(
 
     if event_name is False and (model is False or action is False):
         raise TypeError(
-            'distill_model_event() requires either `event_name` argument or '
-            'both `model` and `action` arguments.'
+            "distill_model_event() requires either `event_name` argument or "
+            "both `model` and `action` arguments."
         )
     if event_name:
         if trust_event_name:
@@ -147,9 +150,9 @@ def distill_model_event(
         elif event_name in HOOK_EVENTS:
             auto = HOOK_EVENTS[event_name]
             if auto:
-                allowed_model, allowed_action = auto.rsplit('.', 1)
+                allowed_model, allowed_action = auto.rsplit(".", 1)
 
-                allowed_action_parts = allowed_action.rsplit('+', 1)
+                allowed_action_parts = allowed_action.rsplit("+", 1)
                 allowed_action = allowed_action_parts[0]
 
                 model = model or allowed_model
@@ -163,13 +166,20 @@ def distill_model_event(
     else:
         event_actions_config = get_event_actions_config()
 
-        event_name, ignore_user_override = event_actions_config.get(model, {}).get(action, (None, False))
+        event_name, ignore_user_override = event_actions_config.get(model, {}).get(
+            action, (None, False)
+        )
         if ignore_user_override:
             user_override = False
 
     if event_name:
-        if getattr(settings, 'HOOK_FINDER', None):
+        if getattr(settings, "HOOK_FINDER", None):
             finder = get_module(settings.HOOK_FINDER)
         else:
             finder = find_and_fire_hook
-        finder(event_name, instance, user_override=user_override, payload_override=payload_override)
+        finder(
+            event_name,
+            instance,
+            user_override=user_override,
+            payload_override=payload_override,
+        )

@@ -17,6 +17,7 @@ class Client(object):
     """
     Manages a simple pool of threads to flush the queue of requests.
     """
+
     def __init__(self, num_threads=3):
         self.queue = collections.deque()
 
@@ -30,22 +31,26 @@ class Client(object):
         self.refresh_threads()
 
     def get(self, *args, **kwargs):
-        self.enqueue('get', *args, **kwargs)
+        self.enqueue("get", *args, **kwargs)
 
     def post(self, *args, **kwargs):
-        self.enqueue('post', *args, **kwargs)
+        self.enqueue("post", *args, **kwargs)
 
     def put(self, *args, **kwargs):
-        self.enqueue('put', *args, **kwargs)
+        self.enqueue("put", *args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        self.enqueue('delete', *args, **kwargs)
+        self.enqueue("delete", *args, **kwargs)
 
     def refresh_threads(self):
         with self.flush_lock:
             # refresh if there are jobs to do and no threads are alive
             if len(self.queue) > 0:
-                to_refresh = [index for index, thread in enumerate(self.flush_threads) if not thread.is_alive()]
+                to_refresh = [
+                    index
+                    for index, thread in enumerate(self.flush_threads)
+                    if not thread.is_alive()
+                ]
                 for index in to_refresh:
                     self.flush_threads[index] = FlushThread(self)
                     self.flush_threads[index].start()
