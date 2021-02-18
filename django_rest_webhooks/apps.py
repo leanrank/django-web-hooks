@@ -5,4 +5,7 @@ class RestHooksConfig(AppConfig):
     name = "django_rest_webhooks"
 
     def ready(self):
-        import django_rest_webhooks.signals
+        try:
+            import django_rest_webhooks.signals  # noqa F401
+        except ImportError:
+            pass
