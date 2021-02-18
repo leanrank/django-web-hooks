@@ -45,6 +45,10 @@ First release of the project after fork from `https://github.com/selfcommunity/r
 
 Remove some Python 2.7 support
 
+#### Version 0.0.3:
+
+Update signals import
+
 
 ### Development
 
